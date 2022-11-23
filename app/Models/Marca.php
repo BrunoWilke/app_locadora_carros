@@ -26,4 +26,8 @@ class Marca extends Model
             'imagem.mimes' => 'O arquivo inserido nao corresponde ao tipo png pu jpeg'
         ];
     }
+
+    public function modelos(){
+        return $this->hasMany('App\Models\Modelo');
+    }
 }
