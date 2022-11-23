@@ -116,13 +116,18 @@ class ModeloController extends Controller
             $request->validate($modelo->rules());
         };
         //exlui a imagem antiga da pasta public
-        if($request->file('imagem')){
+        if ($request->file('imagem')) {
             Storage::disk('public')->delete($modelo->imagem);
+            $imagem = $request->file('imagem');
+            $imagem_urn = $imagem->store('imagens/modelos', 'public');
         }
-        $imagem = $request->file('imagem');
-        $imagem_urn = $imagem->store('imagens/modelos','public');
-        
-        $modelo->update([
+
+
+        $modelo->fill($request->all());
+        $request->file('imagem') ? $modelo->imagem = $imagem_urn : '';
+        $modelo->save();
+         
+        /* $modelo->update([
             'marca_id' => $request->marca_id,
             'nome' => $request->nome,
             'imagem' => $imagem_urn,
@@ -130,7 +135,7 @@ class ModeloController extends Controller
             'lugares' => $request->lugares,
             'air_bag' => $request->air_bag,
             'abs' => $request->abs
-        ]);
+        ]); */
         return response()->json($modelo,200);
     }
 
