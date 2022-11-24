@@ -18,9 +18,31 @@ class ModeloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->modelo->with('marca')->get(),200);
+        $modelos = array();
+        
+        if($request->has('atributos_marca')){
+            $atributos_marca = $request->atributos_marca;
+            $modelos = $this->modelo->with('marca:id,'.$atributos_marca); //estou apensas montando a queryBuilder, nao uso o get ainda
+        }else{
+            $modelos = $this->modelo->with('marca');
+        }
+        
+        if($request->has('filtro')){
+            $condicao = explode(':',$request->filtro);
+            $modelos = $modelos->where($condicao[0],$condicao[1], $condicao[2]);
+        }
+
+        if($request->has('atributos')){
+            
+            $atributos = $request->atributos;
+            $modelos = $modelos->selectRaw($atributos)->get();//aqui continuamos montando a query
+            
+        }else{
+            $modelos = $modelos->get();
+        }
+        return response()->json($modelos,200);
     }
 
     /**
