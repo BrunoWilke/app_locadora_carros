@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Repositories\MarcaRepository;
 
 class MarcaController extends Controller
 {
@@ -22,23 +21,15 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        $marcaRepository = new MarcaRepository($this->marca);
-        
+            
         if($request->has('atributos_modelos')){
             $atributos_modelos = $request->atributos_modelos;
-            $marcaRepository->selectAtributosRegistrosRelacionados('modelos:id,'.$atributos_modelos);
+            $marcas = $this->marca->with('modelos:id,'.$atributos_modelos); //estou apensas montando a queryBuilder, nao uso o get ainda
         }else{
-            $marcaRepository->selectAtributosRegistrosRelacionados('modelos');
+            $marcas = $this->marca->with('modelos');
         }
-        if($request->has('filtro')){
-            $marcaRepository->filtro($request->filtro);
-        }
-        if($request->has('atributos')){
-            $marcaRepository->selectAtributos($request->atributos);
-        }
-        return response()->json($marcaRepository->getResultado(),200);
         
-        /* //------------------------------------------------
+        //------------------------------------------------
         $marcas = array();
         
         if($request->has('atributos_modelos')){
@@ -50,7 +41,7 @@ class MarcaController extends Controller
         
         if($request->has('filtro')){
             $filtros = explode(';',$request->filtro);//usamos ponto e vírgula mas podia ser outro caractere
-            foreach($filtros as $key => $condicao){//pode ter inumeras condicoes de filtro
+        foreach($filtros as $key => $condicao){//pode ter inumeras condicoes de filtro
                 $c = explode(':', $condicao);//aqui eu divido o filtro em 3 partes
                 $marcas = $marcas->where($c[0],$c[1], $c[2]);
             }
@@ -63,7 +54,7 @@ class MarcaController extends Controller
         }else{
             $marcas = $marcas->get();
         }
-        return response()->json($marcas,200); */
+        return response()->json($marcas,200);
     }
 
     /**

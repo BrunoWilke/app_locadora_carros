@@ -30,8 +30,11 @@ class ModeloController extends Controller
         }
         
         if($request->has('filtro')){
-            $condicao = explode(':',$request->filtro);
-            $modelos = $modelos->where($condicao[0],$condicao[1], $condicao[2]);
+            $filtros = explode(';',$request->filtro);//usamos ponto e vírgula mas podia ser outro caractere
+        foreach($filtros as $key => $condicao){//pode ter inumeras condicoes de filtro
+                $c = explode(':', $condicao);//aqui eu divido o filtro em 3 partes
+                $modelos = $modelos->where($c[0],$c[1], $c[2]);
+            }
         }
 
         if($request->has('atributos')){
