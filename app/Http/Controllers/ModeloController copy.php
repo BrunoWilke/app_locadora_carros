@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Modelo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Repositories\ModeloRepository;
 
 class ModeloController extends Controller
 {
@@ -21,21 +20,32 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        $modeloRepository = new ModeloRepository($this->modelo);
+        $modelos = array();
         
         if($request->has('atributos_marca')){
             $atributos_marca = $request->atributos_marca;
-            $modeloRepository->selectAtributosRegistrosRelacionados('marca:id,'.$atributos_marca);
+            $modelos = $this->modelo->with('marca:id,'.$atributos_marca); //estou apensas montando a queryBuilder, nao uso o get ainda
         }else{
-            $modeloRepository->selectAtributosRegistrosRelacionados('marca');
+            $modelos = $this->modelo->with('marca');
         }
+        
         if($request->has('filtro')){
-            $modeloRepository->filtro($request->filtro);
+            $filtros = explode(';',$request->filtro);//usamos ponto e vírgula mas podia ser outro caractere
+        foreach($filtros as $key => $condicao){//pode ter inumeras condicoes de filtro
+                $c = explode(':', $condicao);//aqui eu divido o filtro em 3 partes
+                $modelos = $modelos->where($c[0],$c[1], $c[2]);
+            }
         }
+
         if($request->has('atributos')){
-            $modeloRepository->selectAtributos($request->atributos);
+            
+            $atributos = $request->atributos;
+            $modelos = $modelos->selectRaw($atributos)->get();//aqui continuamos montando a query
+            
+        }else{
+            $modelos = $modelos->get();
         }
-        return response()->json($modeloRepository->getResultado(),200);
+        return response()->json($modelos,200);
     }
 
     /**

@@ -38,32 +38,6 @@ class MarcaController extends Controller
         }
         return response()->json($marcaRepository->getResultado(),200);
         
-        /* //------------------------------------------------
-        $marcas = array();
-        
-        if($request->has('atributos_modelos')){
-            $atributos_modelos = $request->atributos_modelos;
-            $marcas = $this->marca->with('modelos:id,'.$atributos_modelos); //estou apensas montando a queryBuilder, nao uso o get ainda
-        }else{
-            $marcas = $this->marca->with('modelos');
-        }
-        
-        if($request->has('filtro')){
-            $filtros = explode(';',$request->filtro);//usamos ponto e vírgula mas podia ser outro caractere
-            foreach($filtros as $key => $condicao){//pode ter inumeras condicoes de filtro
-                $c = explode(':', $condicao);//aqui eu divido o filtro em 3 partes
-                $marcas = $marcas->where($c[0],$c[1], $c[2]);
-            }
-        }
-        if($request->has('atributos')){
-            
-            $atributos = $request->atributos;
-            $marcas = $marcas->selectRaw($atributos)->get();//aqui continuamos montando a query
-            
-        }else{
-            $marcas = $marcas->get();
-        }
-        return response()->json($marcas,200); */
     }
 
     /**
