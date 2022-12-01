@@ -11,25 +11,37 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    /* public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login']]);
-    }
+    } */
 
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        $credenciais = $request->all(['email', 'password']); //[]
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        //autenticação (email e senha)
+        $token = auth('api')->attempt($credenciais);
+        
+        if($token) { //usuário autenticado com sucesso
+            return response()->json(['token' => $token]);
+
+        } else { //erro de usuário ou senha
+            return response()->json(['erro' => 'Usuário ou senha inválido!'], 403);
+
+            //401 = Unauthorized -> não autorizado
+            //403 = forbidden -> proibido (login inválido)
         }
 
-        return $this->respondWithToken($token);
+        //retornar um Json Web Token
+        return 'login';
+
+       // return $this->respondWithToken($token);
     }
 
     /**
@@ -49,9 +61,9 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        auth('api')->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['msg' => 'Successfully logged out']);
     }
 
     /**
@@ -61,7 +73,9 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        //return $this->respondWithToken(auth()->refresh());
+        $token = auth('api')->refresh();
+        return response()->json(['token' => $token]);
     }
 
     /**
