@@ -30,7 +30,10 @@
                 <card-component titulo="Relação de marcas">
                     <template v-slot:conteudo>
                         <table-component 
-                            :dados="marcas.data" 
+                            :dados="marcas.data"
+                            :visualizar="{visivel:true, dataToggle:'modal', dataTarget: '#modalMarcaVisualizar'}"
+                            :atualizar="true"
+                            :remover="true" 
                             :titulos="{
                                 id:{titulo:'ID', tipo:'texto'},
                                 nome:{titulo:'Nome', tipo:'texto'},
@@ -58,6 +61,7 @@
                 <!-- fim do card de listagem de marcas -->
             </div>
         </div>
+        <!--inicio do modal de inclusao de marca-->
         <modal-component id="modalMarca" titulo="Adicionar marca">
             <template v-slot:alertas>
                 <alert-component tipo="success" :detalhes="transacaoDetalhes" titulo="Cadastro realizado com sucesso" v-if="transacaoStatus == 'adicionado'"></alert-component>
@@ -85,6 +89,23 @@
                 <button type="button" class="btn btn-primary" @click="salvar()">Salvar</button>
             </template>
         </modal-component>
+        <!--fim do modal de inclusao de marca-->
+
+        <!--inicio do modal de visuzalizacao de marca-->
+        <modal-component id="modalMarcaVisualizar" titulo="Visualizar Marca">
+            <template v-slot:alertas>
+            
+            </template>
+
+            <template v-slot:conteudo>
+                teste conteudo
+            </template>
+
+            <template v-slot:rodape>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </template>
+        </modal-component>
+        <!--fim do modal de visuzalizacao de marca-->
     </div>
 </template>
 
