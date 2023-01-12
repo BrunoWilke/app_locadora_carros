@@ -98,7 +98,19 @@
             </template>
 
             <template v-slot:conteudo>
-                teste conteudo
+                {{$store.state.item}}
+                <input-container-component titulo="ID">
+                    <input type="text" class="form-control" :value="$store.state.item.id" disabled>
+                </input-container-component>
+                <input-container-component titulo="Nome da Marca">
+                    <input type="text" class="form-control" :value="$store.state.item.nome" disabled>
+                </input-container-component>
+                <input-container-component titulo="Imagem">
+                    <img src="'/storage/'+$store.state.item.imagem" width="30" height="30">
+                </input-container-component>
+                <input-container-component titulo="Data de Criação">
+                    <input type="text" class="form-control" :value="$store.state.item.created_at |formatDate" disabled>
+                </input-container-component>
             </template>
 
             <template v-slot:rodape>

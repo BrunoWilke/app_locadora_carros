@@ -14,7 +14,7 @@ import Vuex from 'Vuex';
 Vue.use(Vuex);
 const store = new Vuex.Store({
     state:{
-        teste:'teste de recuperaçao do valor de store com Vuex'
+        item:{}
     }
 });
 /**
