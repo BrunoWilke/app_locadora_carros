@@ -1,3 +1,5 @@
+const { default: axios } = require('axios');
+
 window._ = require('lodash');
 
 /**
@@ -39,3 +41,30 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+//interceptar os request da aplicaçao
+ axios.interceptors.request.use(
+    config => {
+        
+       //config.headers.['Accept'] = 'application/json'
+        //config.headers.Authorization = this.token
+        console.log('Interceptando o request antes do envio', config)
+        return config
+    },
+    error => {
+        console.log('Erro na requisição:', error);
+        return Promise.reject(error)
+    }
+)
+
+//interceptar os responses da aplicação
+axios.interceptors.response.use(
+    response => {
+        console.log('Interceptando o response antes da aplicação', response);
+        return response
+    },
+    error => {
+        console.log('Erro na resposta:', error);
+        return Promise.reject(error)
+    } 
+)
